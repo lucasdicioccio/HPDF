@@ -9,6 +9,15 @@
    * `GlyphCode` is now 16 bits; `IsFont` gains `glyphCodeBytes` (default 1)
      and `encodeGlyphs`/`decodeGlyphs`; `fontGlyphs` builds a glyph run for
      any font. Standard 14 and Type1 fonts write the same bytes as before.
+   * TrueType fonts are subset by default: when the document is saved, the
+     font program keeps only the glyphs shown with it (plus glyph 0 and the
+     components of composite glyphs, glyph ids unchanged so CIDToGIDMap stays
+     /Identity), /W and ToUnicode cover those glyphs, and the BaseFont gets an
+     `ABCDEF+` subset tag. `mkTrueTypeFontWith EmbedWhole` embeds the whole
+     font. `subsetTrueType` is exported. Glyphs reach the subset through
+     `recordGlyphs`, which `displayGlyphs`, `displayText`, `text` and the
+     typesetting code call. `DrawState` gains `usedGlyphs` and `PdfState`
+     gains `fontFinalizers`.
 
 ## 1.8
 
