@@ -94,14 +94,15 @@ data AssociatedFile = AssociatedFile
   , afMimeType :: String -- ^ MIME type, the stream's @/Subtype@ (e.g. @text/xml@)
   , afRelationship :: AFRelationship
   , afDescription :: T.Text -- ^ @/Desc@; empty for none
-  , afModDate :: Maybe String -- ^ @/Params /ModDate@, a PDF date such as @D:20261106120000+01'00'@
+  , afCreationDate :: Maybe String -- ^ @/Params /CreationDate@, a PDF date such as @D:20261106120000+01'00'@
+  , afModDate :: Maybe String -- ^ @/Params /ModDate@, a PDF date
   , afContents :: B.ByteString
   }
 
 -- | A file with a name, MIME type and contents, related as 'Data', with
 -- no description and no date.
 associatedFile :: T.Text -> String -> B.ByteString -> AssociatedFile
-associatedFile n mime bytes = AssociatedFile n mime Data T.empty Nothing bytes
+associatedFile n mime bytes = AssociatedFile n mime Data T.empty Nothing Nothing bytes
 
 -- | Embeds the file (an @EmbeddedFile@ stream and its file
 -- specification) and associates it with the document.
@@ -126,6 +127,7 @@ embedAssociatedFile af = do
       , entry "Subtype" (PDFName (escapeName (afMimeType af)))
       , entry "Params" (dictFromList $
           [ entry "Size" (PDFInteger (fromIntegral (B.length (afContents af)))) ]
+          ++ [ entry "CreationDate" (toAsciiString d) | Just d <- [afCreationDate af] ]
           ++ [ entry "ModDate" (toAsciiString d) | Just d <- [afModDate af] ])
       ]}
     tell (fromLazyByteString (afContents af))

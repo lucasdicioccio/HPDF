@@ -10,7 +10,8 @@
      a PDF 1.7 header with a binary comment line, and no image
      interpolation.
    * Associated files (PDF/A-3): `embedAssociatedFile` writes an
-     EmbeddedFile stream (MIME /Subtype, /Params /Size, optional /ModDate)
+     EmbeddedFile stream (MIME /Subtype, /Params /Size, optional /CreationDate and
+     /ModDate)
      and a Filespec (/F, /UF, /AFRelationship, /Desc), listed in the
      catalog's /AF array and /Names /EmbeddedFiles name tree.
    * Factur-X / ZUGFeRD: `facturXExtension level` is the fx: XMP schema

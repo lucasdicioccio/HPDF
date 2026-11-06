@@ -182,7 +182,8 @@ pdfaDoc font = do
   setPDFA (pdfa3b fakeIcc) { pdfaTitle = T.pack "Facture 42"
                            , pdfaExtensions = [facturXExtension (T.pack "BASIC")] }
   _ <- embedAssociatedFile (associatedFile (T.pack "factur-x.xml") "text/xml" (BL.fromStrict (C.pack "<x/>")))
-         { afRelationship = Alternative, afDescription = T.pack "Factur-X invoice" }
+         { afRelationship = Alternative, afDescription = T.pack "Factur-X invoice"
+         , afCreationDate = Just "D:20261106000000Z", afModDate = Just "D:20261106000000Z" }
   img <- createPDFRawImageFromByteString 1 1 True NoFilter (BL.pack [255, 0, 0])
   page <- addPage Nothing
   drawWithPage page $ do
@@ -208,7 +209,8 @@ test_pdfaStructure = withTestFont $ \_ d -> do
     , "/S /GTS_PDFA1", "/OutputIntents", "/DestOutputProfile"
     , "/Type /EmbeddedFile", "/Subtype /text#2Fxml", "/AFRelationship /Alternative"
     , "/UF (factur-x.xml)", "/EmbeddedFiles", "/AF [", "/Title (Facture 42)"
-    , "/Author (Salmon)", "/ID [<", "/Interpolate false" ]
+    , "/Author (Salmon)", "/ID [<", "/Interpolate false"
+    , "/Size 4", "/CreationDate (D:20261106000000Z)", "/ModDate (D:20261106000000Z)" ]
   assertBool (not (C.pack "/Interpolate true" `B.isInfixOf` pdf))
   -- the metadata stream is not compressed
   assertBool (not (C.pack "/Filter" `B.isInfixOf` C.takeWhile (/= 's') (snd (B.breakSubstring (C.pack "/Subtype /XML") pdf))))
